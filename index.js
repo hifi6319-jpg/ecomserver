@@ -24,6 +24,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => res.send('Server is running. Supabase is configured.'));
+
 // --- Helper Functions for Data Transformation ---
 // Mongoose used _id, Supabase uses id or _id depending on table. 
 // We try to normalize response to match frontend expectations.

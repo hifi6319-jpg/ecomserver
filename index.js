@@ -25,13 +25,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'nutrimix_super_secret_key_123';
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-    console.error('CRITICAL ERROR: Missing Supabase configuration.');
-    console.error('Please verify SUPABASE_URL and SUPABASE_KEY are set in your environment variables.');
-    console.error('Current Environment:', {
+if (!supabaseUrl || !supabaseKey || !supabaseUrl.startsWith('https://')) {
+    console.error('CRITICAL ERROR: Invalid or Missing Supabase configuration.');
+    console.error('SUPABASE_URL must start with https:// (e.g., https://xyz.supabase.co)');
+    console.error('Current Environment Flags:', {
         PORT: process.env.PORT,
-        NODE_ENV: process.env.NODE_ENV,
         SUPABASE_URL_SET: !!supabaseUrl,
+        SUPABASE_URL_VALID: !!supabaseUrl && supabaseUrl.startsWith('https://'),
         SUPABASE_KEY_SET: !!supabaseKey
     });
     process.exit(1);

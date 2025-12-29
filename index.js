@@ -22,17 +22,20 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'nutrimix_super_secret_key_123';
 
 // Supabase Setup
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+const supabaseKey = (process.env.SUPABASE_KEY || '').trim();
 
 if (!supabaseUrl || !supabaseKey || !supabaseUrl.startsWith('https://')) {
     console.error('CRITICAL ERROR: Invalid or Missing Supabase configuration.');
-    console.error('SUPABASE_URL must start with https:// (e.g., https://xyz.supabase.co)');
-    console.error('Current Environment Flags:', {
+    console.error('1. SUPABASE_URL must start with https:// (e.g., https://xyz.supabase.co)');
+    console.error('2. Ensure no extra spaces are present in Render Environment Variables.');
+    console.error('Diagnostic Data:', {
         PORT: process.env.PORT,
-        SUPABASE_URL_SET: !!supabaseUrl,
-        SUPABASE_URL_VALID: !!supabaseUrl && supabaseUrl.startsWith('https://'),
-        SUPABASE_KEY_SET: !!supabaseKey
+        URL_EXISTS: !!supabaseUrl,
+        URL_STARTS_WITH_HTTPS: supabaseUrl.startsWith('https://'),
+        URL_LENGTH: supabaseUrl.length,
+        KEY_EXISTS: !!supabaseKey,
+        KEY_LENGTH: supabaseKey.length
     });
     process.exit(1);
 }

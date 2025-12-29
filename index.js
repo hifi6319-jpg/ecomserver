@@ -13,18 +13,36 @@ const io = new Server(server, {
     cors: { origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }
 });
 
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION:', err);
+});
+
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'nutrimix_super_secret_key_123';
 
 // Supabase Setup
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    console.error('CRITICAL ERROR: Missing Supabase configuration.');
+    console.error('Please verify SUPABASE_URL and SUPABASE_KEY are set in your environment variables.');
+    console.error('Current Environment:', {
+        PORT: process.env.PORT,
+        NODE_ENV: process.env.NODE_ENV,
+        SUPABASE_URL_SET: !!supabaseUrl,
+        SUPABASE_KEY_SET: !!supabaseKey
+    });
+    process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Server is running. Supabase is configured.'));
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 // --- Helper Functions for Data Transformation ---
 // Mongoose used _id, Supabase uses id or _id depending on table. 
